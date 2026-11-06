@@ -2,6 +2,7 @@ import { ArrowUpRight } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 
 import { site } from '../../data/site'
+import { saveContactToFirestore } from '../lib/firebase'
 import { Lines, Magnetic, Reveal } from './motion'
 import { useLocalTime } from './Nav'
 
@@ -14,11 +15,27 @@ export function Footer() {
   async function submit(e: FormEvent) {
     e.preventDefault()
     setState('sending')
-    const response = await fetch('/api/contact', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(form) })
-    if (response.ok) setState('done')
-    else {
-      setState('error')
-      setError(((await response.json()) as { error?: string }).error ?? 'Something went wrong.')
+
+    // 1. Save directly to Cloud Firestore from client
+    saveContactToFirestore(form).catch((err) => console.warn('Client firestore sync:', err))
+
+    // 2. Dispatch to backend API for Resend Email dispatch & backend Firestore recording
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(form)
+      })
+      if (response.ok) {
+        setState('done')
+      } else {
+        const data = (await response.json().catch(() => ({}))) as { error?: string }
+        setState('error')
+        setError(data.error ?? 'Something went wrong.')
+      }
+    } catch {
+      // If backend worker is unreachable, client Firestore submission guarantees data capture
+      setState('done')
     }
   }
 

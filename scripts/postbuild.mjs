@@ -1,9 +1,11 @@
 // Strips files the Sites uploader refuses (hidden files and source maps)
 // from the build output, so `deploy.json` can point straight at dist/.
-import { readdirSync, rmSync, statSync } from 'node:fs'
+import { existsSync, readdirSync, rmSync, statSync } from 'node:fs'
 import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 function clean(dir) {
+  if (!existsSync(dir)) return
   for (const name of readdirSync(dir)) {
     const path = join(dir, name)
     if (name.startsWith('.') || name.endsWith('.map')) {
@@ -14,4 +16,4 @@ function clean(dir) {
   }
 }
 
-clean(new URL('../dist', import.meta.url).pathname)
+clean(fileURLToPath(new URL('../dist', import.meta.url)))

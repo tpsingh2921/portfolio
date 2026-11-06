@@ -1,0 +1,350 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // =========================================================================
+    // ASSUMED DATA MODEL & FIELD DEFINITIONS
+    // =========================================================================
+    //
+    // Collection: interview_requests
+    // Document ID: requestId (string, 1-64 characters)
+    // Fields:
+    //   - name: string (required, 2-100 characters) - Candidate or recruiter name
+    //   - email: string (required, 5-150 characters, regex email format)
+    //   - message: string (required, 5-3000 characters) - Opportunity / inquiry message
+    //   - status: string (required, initialized to 'Pending'; transitions to 'Reviewed',
+    //             'Interview Scheduled', 'Completed', 'Rejected')
+    //   - createdAt: timestamp or ISO string (required, <= 50 chars)
+    //   - id: string (optional, 1-64 chars, immutable on update)
+    //   - company: string (optional, <= 100 chars)
+    //   - phone: string (optional, <= 30 chars)
+    //   - role: string (optional, <= 100 chars)
+    //   - jobTitle: string (optional, <= 100 chars)
+    //   - updatedAt: timestamp or ISO string (optional, <= 50 chars)
+    //   - adminNotes: string (optional, <= 2000 chars, update only)
+    //   - scheduledDate: timestamp or ISO string (optional, <= 50 chars, update only)
+    //   - reviewedAt: timestamp or ISO string (optional, <= 50 chars, update only)
+    //
+    // Collection: admin_credentials
+    // Document ID: credId (string, 1-64 characters)
+    // Access: SEC-01 Hardened - Completely closed to browser clients (allow read, write: if false).
+    // Fields:
+    //   - username: string (required, 2-64 chars)
+    //   - email: string (required, 5-150 chars, regex email)
+    //   - salt: string (required, 16-128 hex chars)
+    //   - hash: string (required, 32-256 hex chars)
+    //   - iterations: int (required, 1,000 to 1,000,000)
+    //   - algo: string (required, one of 'pbkdf2_sha512', 'pbkdf2_sha256', 'scrypt', 'argon2id')
+    //   - createdAt: timestamp or ISO string (optional, <= 50 chars)
+    //   - updatedAt: timestamp or ISO string (optional, <= 50 chars)
+    //   - resetOtp: string (optional, <= 32 chars) or int
+    //   - resetOtpExpiresAt: int, timestamp, or ISO string (optional, <= 50 chars)
+    //
+    // Collection: admin_users
+    // Document ID: userId (matches request.auth.uid)
+    // Fields:
+    //   - email: string (required, 5-150 chars, regex email)
+    //   - role: string (required, one of 'admin', 'owner', 'reviewer')
+    //   - name: string (optional, <= 100 chars)
+    //   - createdAt: timestamp (server timestamp)
+    //   - updatedAt: timestamp (server timestamp)
+    //
+    // Collection: audit_logs
+    // Document ID: logId (string, 1-64 characters)
+    // Fields:
+    //   - action: string (required, 2-100 chars)
+    //   - performedBy: string (required, 3-150 chars)
+    //   - timestamp: timestamp (required, request.time)
+    //   - targetId: string (optional, <= 100 chars)
+    //   - details: string (optional, <= 2000 chars)
+    //   - ipAddress: string (optional, <= 50 chars)
+    //
+    // Collection: admin_sessions
+    // Document ID: sessionId
+    // Fields:
+    //   - userId: string (matches request.auth.uid)
+    //   - createdAt: timestamp
+    //   - expiresAt: timestamp
+    //
+    // =========================================================================
+
+    // =========================================================================
+    // AUTHENTICATION & ACCESS CONTROL HELPERS (RBAC)
+    // =========================================================================
+
+    // Checks if the request is from an authenticated Firebase Auth user
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Checks if the user is registered in the admin_users collection
+    function isDocAdmin() {
+      return isAuthenticated() && 
+             exists(/databases/$(database)/documents/admin_users/$(request.auth.uid));
+    }
+
+    // Checks if user has a custom admin claim (via Firebase Admin SDK)
+    function hasAdminClaim() {
+      return isAuthenticated() && 
+             'admin' in request.auth.token && 
+             request.auth.token.admin == true;
+    }
+
+    // Central administrator check (Custom Claim OR admin_users doc existence)
+    function isAdmin() {
+      return isAuthenticated() && (hasAdminClaim() || isDocAdmin());
+    }
+
+    // =========================================================================
+    // DOMAIN VALIDATORS: interview_requests
+    // =========================================================================
+
+    // Valid workflow status states
+    function isValidStatus(status) {
+      return status in ['Pending', 'Reviewed', 'Interview Scheduled', 'Completed', 'Rejected'];
+    }
+
+    // Domain validator for creating an interview request (Public recruiter submission)
+    function isValidInterviewRequestCreate() {
+      let data = request.resource.data;
+      let requiredKeys = ['name', 'email', 'message', 'status', 'createdAt'];
+      let allAllowedKeys = [
+        'name', 'email', 'message', 'status', 'createdAt',
+        'id', 'company', 'phone', 'role', 'jobTitle', 'updatedAt'
+      ];
+
+      return data.keys().hasAll(requiredKeys) &&
+             data.keys().hasOnly(allAllowedKeys) &&
+             // Name validation (2-100 characters)
+             data.name is string && 
+             data.name.size() >= 2 && 
+             data.name.size() <= 100 &&
+             // Email format and length bounds (5-150 characters)
+             data.email is string && 
+             data.email.size() >= 5 && 
+             data.email.size() <= 150 &&
+             data.email.matches('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$') &&
+             // Message validation (5-3000 characters)
+             data.message is string && 
+             data.message.size() >= 5 && 
+             data.message.size() <= 3000 &&
+             // Status must strictly be initialized to 'Pending'
+             data.status == 'Pending' &&
+             // Timestamp verification (supports Firestore server timestamp or ISO string)
+             (data.createdAt is timestamp || (data.createdAt is string && data.createdAt.size() <= 50)) &&
+             // Optional fields validation
+             (!('id' in data) || (data.id is string && data.id.size() <= 64)) &&
+             (!('company' in data) || (data.company is string && data.company.size() <= 100)) &&
+             (!('phone' in data) || (data.phone is string && data.phone.size() <= 30)) &&
+             (!('role' in data) || (data.role is string && data.role.size() <= 100)) &&
+             (!('jobTitle' in data) || (data.jobTitle is string && data.jobTitle.size() <= 100)) &&
+             (!('updatedAt' in data) || data.updatedAt is timestamp || (data.updatedAt is string && data.updatedAt.size() <= 50));
+    }
+
+    // Domain validator for updating an interview request (Admin management)
+    function isValidInterviewRequestUpdate() {
+      let data = request.resource.data;
+      let prev = resource.data;
+      let allowedUpdateKeys = ['status', 'updatedAt', 'adminNotes', 'scheduledDate', 'reviewedAt', 'id'];
+
+      return // Enforce that candidate submission fields are preserved
+             data.diff(prev).affectedKeys().hasOnly(allowedUpdateKeys) &&
+             // Enforce id immutability if present on previous record
+             (!('id' in data) || !('id' in prev) || data.id == prev.id) &&
+             (!('id' in data) || (data.id is string && data.id.size() <= 64)) &&
+             // Status must be one of the permitted workflow states
+             data.status is string &&
+             isValidStatus(data.status) &&
+             // UpdatedAt verification
+             (!('updatedAt' in data) || data.updatedAt is timestamp || (data.updatedAt is string && data.updatedAt.size() <= 50)) &&
+             // Optional admin metadata validation
+             (!('adminNotes' in data) || (data.adminNotes is string && data.adminNotes.size() <= 2000)) &&
+             (!('scheduledDate' in data) || data.scheduledDate is timestamp || (data.scheduledDate is string && data.scheduledDate.size() <= 50)) &&
+             (!('reviewedAt' in data) || data.reviewedAt is timestamp || (data.reviewedAt is string && data.reviewedAt.size() <= 50));
+    }
+
+    // =========================================================================
+    // DOMAIN VALIDATORS: admin_credentials
+    // =========================================================================
+
+    // Strict schema validator ensuring only cryptographically hashed credentials can be saved
+    // Preserved for schema validation, testing, and backend consistency.
+    function isValidAdminCredential() {
+      let data = request.resource.data;
+      let requiredKeys = ['username', 'email', 'salt', 'hash', 'iterations', 'algo'];
+      let allAllowedKeys = [
+        'username', 'email', 'salt', 'hash', 'iterations', 'algo',
+        'createdAt', 'updatedAt', 'resetOtp', 'resetOtpExpiresAt'
+      ];
+
+      return data.keys().hasAll(requiredKeys) &&
+             data.keys().hasOnly(allAllowedKeys) &&
+             // Username bounds (2-64 characters)
+             data.username is string &&
+             data.username.size() >= 2 &&
+             data.username.size() <= 64 &&
+             // Email bounds (5-150 characters with regex)
+             data.email is string &&
+             data.email.size() >= 5 &&
+             data.email.size() <= 150 &&
+             data.email.matches('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$') &&
+             // Salt must be a cryptographic random hex string (16 bytes = 32 hex chars, max 128 chars)
+             data.salt is string &&
+             data.salt.size() >= 16 &&
+             data.salt.size() <= 128 &&
+             // Hash must be a cryptographic digest (min 32 hex chars, max 256 chars) - never plain text!
+             data.hash is string &&
+             data.hash.size() >= 32 &&
+             data.hash.size() <= 256 &&
+             // Iteration count must be robust against brute-force (>= 1,000 iterations)
+             data.iterations is int &&
+             data.iterations >= 1000 &&
+             data.iterations <= 1000000 &&
+             // Approved cryptographic algorithms
+             data.algo is string &&
+             data.algo in ['pbkdf2_sha512', 'pbkdf2_sha256', 'scrypt', 'argon2id'] &&
+             // Timestamps
+             (!('createdAt' in data) || data.createdAt is timestamp || (data.createdAt is string && data.createdAt.size() <= 50)) &&
+             (!('updatedAt' in data) || data.updatedAt is timestamp || (data.updatedAt is string && data.updatedAt.size() <= 50)) &&
+             // Optional reset OTP fields
+             (!('resetOtp' in data) || (data.resetOtp is string && data.resetOtp.size() <= 32) || (data.resetOtp is int)) &&
+             (!('resetOtpExpiresAt' in data) || data.resetOtpExpiresAt is int || data.resetOtpExpiresAt is timestamp || (data.resetOtpExpiresAt is string && data.resetOtpExpiresAt.size() <= 50));
+    }
+
+    // =========================================================================
+    // DOMAIN VALIDATORS: admin_users & audit_logs
+    // =========================================================================
+
+    function isValidAdminUserCreate() {
+      let data = request.resource.data;
+      let requiredKeys = ['email', 'role'];
+      let allowedKeys = ['email', 'role', 'name', 'createdAt', 'updatedAt'];
+
+      return data.keys().hasAll(requiredKeys) &&
+             data.keys().hasOnly(allowedKeys) &&
+             data.email is string && 
+             data.email.size() >= 5 &&
+             data.email.size() <= 150 &&
+             data.email.matches('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$') &&
+             data.role is string && 
+             data.role in ['admin', 'owner', 'reviewer'] &&
+             (!('name' in data) || (data.name is string && data.name.size() <= 100)) &&
+             (!('createdAt' in data) || (data.createdAt is timestamp && data.createdAt == request.time)) &&
+             (!('updatedAt' in data) || (data.updatedAt is timestamp && data.updatedAt == request.time));
+    }
+
+    function isValidAdminUserUpdate() {
+      let data = request.resource.data;
+      let prev = resource.data;
+      let allowedKeys = ['email', 'role', 'name', 'createdAt', 'updatedAt'];
+
+      return data.keys().hasAll(['email', 'role']) &&
+             data.keys().hasOnly(allowedKeys) &&
+             data.email is string &&
+             data.email.size() >= 5 &&
+             data.email.size() <= 150 &&
+             data.role is string &&
+             data.role in ['admin', 'owner', 'reviewer'] &&
+             (!('name' in data) || (data.name is string && data.name.size() <= 100)) &&
+             // Immutability of creation timestamp
+             (!('createdAt' in prev) || data.createdAt == prev.createdAt) &&
+             // UpdatedAt must be current request time
+             (!('updatedAt' in data) || (data.updatedAt is timestamp && data.updatedAt == request.time));
+    }
+
+    function isValidAuditLogCreate() {
+      let data = request.resource.data;
+      let requiredKeys = ['action', 'performedBy', 'timestamp'];
+      let allowedKeys = ['action', 'performedBy', 'timestamp', 'targetId', 'details', 'ipAddress'];
+
+      return data.keys().hasAll(requiredKeys) &&
+             data.keys().hasOnly(allowedKeys) &&
+             data.action is string && 
+             data.action.size() >= 2 &&
+             data.action.size() <= 100 &&
+             data.performedBy is string && 
+             data.performedBy.size() >= 3 &&
+             data.performedBy.size() <= 150 &&
+             data.timestamp is timestamp && 
+             data.timestamp == request.time &&
+             (!('targetId' in data) || (data.targetId is string && data.targetId.size() <= 100)) &&
+             (!('details' in data) || (data.details is string && data.details.size() <= 2000)) &&
+             (!('ipAddress' in data) || (data.ipAddress is string && data.ipAddress.size() <= 50));
+    }
+
+    // =========================================================================
+    // 1. INTERVIEW REQUESTS COLLECTION
+    // =========================================================================
+    // SEC-02 REMEDIATION:
+    // - allow read, update, delete: if false for unauthenticated clients.
+    // - Recruiter contact details and inquiry messages are protected from public listing.
+    // - Authenticated administrators (via Firebase Auth) may read, update, or delete.
+    // - Public unauthenticated recruiters/visitors may ONLY create inquiries using strict schema validation.
+    match /interview_requests/{requestId} {
+      allow read: if isAdmin();
+      allow create: if requestId.size() <= 64 && isValidInterviewRequestCreate();
+      allow update: if isAdmin() && isValidInterviewRequestUpdate();
+      allow delete: if isAdmin();
+    }
+
+    // =========================================================================
+    // 2. ADMIN CREDENTIALS COLLECTION (CRYPTOGRAPHICALLY HASHED VAULT)
+    // =========================================================================
+    // SEC-01 REMEDIATION:
+    // - Under no circumstances should browser clients read or write credential records.
+    // - Completely closed to all client-side Firestore access.
+    // - Backend services use Admin SDK or backend API server logic.
+    match /admin_credentials/{credId} {
+      allow read, write: if false;
+    }
+
+    // =========================================================================
+    // 3. ADMIN USERS COLLECTION (RBAC PROFILE MANAGEMENT)
+    // =========================================================================
+    match /admin_users/{userId} {
+      allow get: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow list: if isAdmin();
+      allow create: if isAdmin() && isValidAdminUserCreate();
+      allow update: if isAdmin() && isValidAdminUserUpdate();
+      allow delete: if isAdmin();
+    }
+
+    // =========================================================================
+    // 4. AUDIT LOGS COLLECTION (IMMUTABLE AUDIT TRAIL)
+    // =========================================================================
+    match /audit_logs/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin() && logId.size() <= 64 && isValidAuditLogCreate();
+      allow update, delete: if false;
+    }
+
+    // =========================================================================
+    // 5. ADMIN SESSIONS & OTP STORAGE
+    // =========================================================================
+    match /admin_sessions/{sessionId} {
+      allow get: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow list: if isAdmin();
+      allow create: if isAuthenticated() && 
+                       request.resource.data.userId == request.auth.uid &&
+                       request.resource.data.keys().hasAll(['userId', 'createdAt', 'expiresAt']) &&
+                       request.resource.data.createdAt is timestamp &&
+                       request.resource.data.expiresAt is timestamp;
+      allow update: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid &&
+                       request.resource.data.userId == resource.data.userId;
+      allow delete: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+
+    match /otp_codes/{otpId} {
+      allow read, write: if false;
+    }
+
+    // =========================================================================
+    // 6. GLOBAL DEFAULT DENY
+    // =========================================================================
+    // Catch-all rule rejecting any unmapped paths or sub-collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
