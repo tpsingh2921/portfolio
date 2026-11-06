@@ -1,6 +1,7 @@
 import { ArrowUpRight } from 'lucide-react'
 
 import { certifications, experience, site, tools } from '../../data/site'
+import { EmailLogo, LinkedInLogo } from '../components/BrandLogos'
 import { Lines, Parallax, Reveal } from '../components/motion'
 
 export function About() {
@@ -23,8 +24,9 @@ export function About() {
           <ul className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-[14px]">
             {site.socials.map((s) => (
               <li key={s.label}>
-                <a href={s.href} className="link-draw inline-flex items-center gap-1 text-muted hover:text-fg">
-                  {s.label}
+                <a href={s.href} target="_blank" rel="noreferrer" className="link-draw inline-flex items-center gap-2 text-muted transition-colors hover:text-fg">
+                  {s.label === 'LinkedIn' ? <LinkedInLogo className="size-4 shrink-0" /> : <EmailLogo className="size-4 shrink-0" />}
+                  <span>{s.label}</span>
                   <ArrowUpRight className="size-3.5" />
                 </a>
               </li>

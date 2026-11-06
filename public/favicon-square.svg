@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256"><g transform="translate(13.31 13.31) scale(0.896)">
+  
+  <!-- Obsidian Squircle Base -->
+  <rect x="8" y="8" width="240" height="240" rx="58" fill="#141311"/>
+  
+  <!-- Architectural Monogram 'T' in Crisp White -->
+  <path d="M 46 62 H 144 C 148.4 62 152 65.6 152 70 V 82 C 152 86.4 148.4 90 144 90 H 109 V 188 C 109 192.4 105.4 196 101 196 H 89 C 84.6 196 81 192.4 81 188 V 90 H 46 C 41.6 90 38 86.4 38 82 V 70 C 38 65.6 41.6 62 46 62 Z" fill="#F8FAFC"/>
+  
+  <!-- Dynamic Analytical 'J' in Radiant Cobalt -->
+  <path d="M 164 96 H 190 C 192.2 96 194 97.8 194 100 V 160 C 194 182 178 196 154 196 C 134 196 120 184 120 168 C 120 165.8 121.8 164 124 164 H 146 C 148.2 164 150 165.8 150 168 C 150 172 152 174 154 174 C 160 174 166 168 166 160 V 100 C 166 97.8 167.8 96 170 96 Z" fill="#2F3BFF"/>
+  
+  <!-- Precision Focus Node -->
+  <circle cx="178" cy="74" r="14" fill="#2F3BFF"/>
+</g></svg>

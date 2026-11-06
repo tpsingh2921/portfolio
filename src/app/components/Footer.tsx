@@ -2,6 +2,7 @@ import { ArrowUpRight } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 
 import { site } from '../../data/site'
+import { EmailLogo, LinkedInLogo } from './BrandLogos'
 import { saveContactToFirestore } from '../lib/firebase'
 import { Lines, Magnetic, Reveal } from './motion'
 import { useLocalTime } from './Nav'
@@ -92,8 +93,9 @@ export function Footer() {
           <ul className="flex flex-wrap gap-x-6 gap-y-2">
             {site.socials.map((s) => (
               <li key={s.label}>
-                <a href={s.href} className="link-draw text-muted transition-colors hover:text-fg">
-                  {s.label}
+                <a href={s.href} target="_blank" rel="noreferrer" className="link-draw inline-flex items-center gap-1.5 text-muted transition-colors hover:text-fg">
+                  {s.label === 'LinkedIn' ? <LinkedInLogo className="size-3.5 shrink-0" /> : <EmailLogo className="size-3.5 shrink-0" />}
+                  <span>{s.label}</span>
                 </a>
               </li>
             ))}
