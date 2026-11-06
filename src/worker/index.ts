@@ -11,6 +11,15 @@ type Env = {
 
 const app = new Hono<{ Bindings: Env }>()
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+}
+
 app.get('/api/health', (c) => c.json({ ok: true, timestamp: new Date().toISOString() }))
 
 // Contact form: saves inquiry to Cloud Firestore & sends email notification via Resend
@@ -26,6 +35,10 @@ app.post('/api/contact', async (c) => {
   if (!message) {
     return c.json({ error: 'Write a few words about the project or opportunity.' }, 400)
   }
+
+  const safeName = escapeHtml(name)
+  const safeEmail = escapeHtml(email)
+  const safeMessage = escapeHtml(message)
 
   // Retrieve keys exclusively from environment variables (.env / Cloudflare env)
   const proc = typeof process !== 'undefined' ? process.env : {}
@@ -46,18 +59,18 @@ app.post('/api/contact', async (c) => {
       const emailPayload = {
         from: resendFrom,
         to: adminNotifyEmail,
-        subject: `New Portfolio Inquiry from ${name}`,
+        subject: `New Portfolio Inquiry from ${safeName}`,
         html: `
           <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 580px; margin: 0 auto; padding: 28px; background: #0c1224; color: #f8fafc; border-radius: 12px; border: 1px solid #38bdf8;">
             <h2 style="margin: 0 0 16px; color: #38bdf8; font-size: 22px;">New Inquiry Received</h2>
             <div style="background: #1e293b; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-              <p style="margin: 0 0 10px; font-size: 14px;"><strong style="color: #94a3b8;">Sender Name:</strong> ${name}</p>
-              <p style="margin: 0 0 10px; font-size: 14px;"><strong style="color: #94a3b8;">Sender Email:</strong> <a href="mailto:${email}" style="color: #38bdf8; text-decoration: none;">${email}</a></p>
+              <p style="margin: 0 0 10px; font-size: 14px;"><strong style="color: #94a3b8;">Sender Name:</strong> ${safeName}</p>
+              <p style="margin: 0 0 10px; font-size: 14px;"><strong style="color: #94a3b8;">Sender Email:</strong> <a href="mailto:${safeEmail}" style="color: #38bdf8; text-decoration: none;">${safeEmail}</a></p>
               <p style="margin: 0; font-size: 14px;"><strong style="color: #94a3b8;">Received At:</strong> ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })} (IST)</p>
             </div>
             <div style="background: #111827; padding: 18px; border-radius: 8px; border-left: 4px solid #38bdf8;">
               <h4 style="margin: 0 0 8px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8;">Message</h4>
-              <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #e2e8f0; white-space: pre-wrap;">${message}</p>
+              <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #e2e8f0; white-space: pre-wrap;">${safeMessage}</p>
             </div>
             <p style="margin: 20px 0 0; font-size: 12px; color: #64748b; text-align: center;">Tejpal Singh Jodha · Business Analyst Portfolio</p>
           </div>
