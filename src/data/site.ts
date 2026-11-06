@@ -11,7 +11,7 @@ export const site = {
   linkedin: 'https://www.linkedin.com/in/tpsingh21',
   available: true,
   intro:
-    'Business analyst with an MBA in Business Analytics and a BSc in Computer Science. I turn what a business needs into requirements, diagrams and a backlog a team can actually build from.',
+    'IT Business Analyst with an MBA in Business Analytics and a B.Sc. in Computer Science. I operate at the intersection of business strategy and software engineering—turning complex stakeholder needs into structured specifications (BRD, FRD, SRS), interactive prototypes, and traceable user backlogs that delivery teams can execute with zero ambiguity. Proficient in Agile Scrum sprint governance, UML/BPMN system modeling, SQL-driven analysis, and end-to-end UAT validation.',
   socials: [
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/tpsingh21' },
     { label: 'Email', href: 'mailto:tpsingh2101@gmail.com' },

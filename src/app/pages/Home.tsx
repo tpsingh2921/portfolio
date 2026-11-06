@@ -30,16 +30,8 @@ export function Home() {
                 ))}
               </h1>
 
-              <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.7, ease }} className="mt-8 space-y-1.5 sm:mt-10">
-                <p className="text-[15px] font-medium tracking-wide text-fg sm:text-[16px]">
-                  Design Technologist &amp; Creative Director <span className="text-accent">•</span>
-                </p>
-                <p className="text-[12px] font-bold uppercase tracking-widest text-muted/80">
-                  AVAILABLE FOR PROJECTS
-                </p>
-                <p className="mt-3.5 max-w-md text-pretty text-[14.5px] leading-relaxed text-muted sm:text-[15.5px]">
-                  {site.intro}
-                </p>
+              <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.7, ease }} className="mt-8 border-t border-fg/15 pt-6 sm:mt-10">
+                <p className="max-w-xl text-pretty text-[15.5px] leading-relaxed text-muted sm:text-[17px]">{site.intro}</p>
               </motion.div>
             </div>
 
