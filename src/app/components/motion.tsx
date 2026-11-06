@@ -1,5 +1,5 @@
 import { motion, useInView, useMotionValue, useScroll, useSpring, useTransform } from 'motion/react'
-import { useRef, type ReactNode } from 'react'
+import { useRef, type ReactEventHandler, type ReactNode } from 'react'
 
 import { cx } from '../lib/cx'
 
@@ -41,13 +41,33 @@ export function Reveal({ children, delay = 0, className, y = 24 }: { children: R
 }
 
 /** An image that drifts slightly slower than the page while it scrolls past. */
-export function Parallax({ src, alt, className, strength = 8 }: { src: string; alt: string; className?: string; strength?: number }) {
+export function Parallax({
+  src,
+  alt,
+  className,
+  strength = 8,
+  zoom = 1.12,
+  imgClassName,
+  frameClassName,
+  onError,
+}: {
+  src: string
+  alt: string
+  className?: string
+  strength?: number
+  /** Overscale that hides the edges exposed by the drift. Use 1 for artwork that must not be cropped. */
+  zoom?: number
+  imgClassName?: string
+  /** Extra classes on the frame, for things like a backdrop behind a cut-out. */
+  frameClassName?: string
+  onError?: ReactEventHandler<HTMLImageElement>
+}) {
   const ref = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
   const y = useTransform(scrollYProgress, [0, 1], [`-${strength}%`, `${strength}%`])
   return (
-    <div ref={ref} className={cx('image-frame relative', className)}>
-      <motion.img src={src} alt={alt} style={{ y }} className="absolute inset-0 size-full scale-[1.12] object-cover" loading="lazy" />
+    <div ref={ref} className={cx('image-frame relative', className, frameClassName)}>
+      <motion.img src={src} alt={alt} style={{ y, scale: zoom }} className={cx('absolute inset-0 size-full object-cover', imgClassName)} loading="lazy" onError={onError} />
     </div>
   )
 }

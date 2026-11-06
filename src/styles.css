@@ -140,6 +140,12 @@
   overflow: hidden;
 }
 
+/* Backdrop behind the cut-out portrait. Left unlayered on purpose: it has to
+   beat the fill that image-frame gives every media frame. */
+.portrait-backdrop {
+  background: linear-gradient(150deg, #cfdcf8 0%, #eae4dc 50%, #f7e8d6 100%);
+}
+
 /* Film grain over the hero's colour field. */
 @utility grain {
   opacity: 0.22;

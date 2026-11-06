@@ -3,7 +3,7 @@ import { ArrowLeft, ArrowUpRight } from 'lucide-react'
 import { Link, Navigate, useParams } from 'react-router'
 
 import { bySlug, projects } from '../../data/site'
-import { Lines, Parallax, Reveal } from '../components/motion'
+import { Lines, Reveal } from '../components/motion'
 
 const ease = [0.22, 1, 0.36, 1] as const
 
@@ -32,10 +32,17 @@ export function Work() {
         initial={{ opacity: 0, y: 30, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 1.1, delay: 0.2, ease }}
-        className="mt-12 overflow-hidden rounded-[32px]"
+        className="mt-12 overflow-hidden rounded-[32px] border border-line"
         style={{ background: project.tint }}
       >
-        <Parallax src={project.cover} alt={project.title} className="aspect-[16/10] sm:aspect-[16/9]" strength={5} />
+        <img
+          src={project.cover}
+          alt={`${project.title} — ${project.gallery[0]?.label ?? 'screen'}`}
+          className="aspect-[16/10] w-full object-cover object-top sm:aspect-[16/9]"
+          onError={(e) => {
+            e.currentTarget.style.display = 'none'
+          }}
+        />
       </motion.div>
 
       <div className="mt-16 grid gap-12 lg:grid-cols-[320px_1fr] lg:gap-24">
@@ -72,16 +79,21 @@ export function Work() {
       </div>
 
       <div className="mt-16 grid gap-6 md:grid-cols-2">
-        <Reveal>
-          <div className="image-frame aspect-[4/3] rounded-image" style={{ background: project.tint }}>
-            <img src={project.cover} alt="" className="size-full object-cover" style={{ transform: 'scale(1.6)', transformOrigin: '30% 40%' }} />
-          </div>
-        </Reveal>
-        <Reveal delay={0.1}>
-          <div className="image-frame aspect-[4/3] rounded-image" style={{ background: project.tint }}>
-            <img src={project.cover} alt="" className="size-full object-cover" style={{ transform: 'scale(2.2)', transformOrigin: '70% 65%' }} />
-          </div>
-        </Reveal>
+        {project.gallery.slice(1).map((shot, i) => (
+          <Reveal key={shot.src} delay={i * 0.1}>
+            <a href={shot.src} target="_blank" rel="noreferrer" className="group block">
+              <div className="overflow-hidden rounded-image border border-line bg-white">
+                <img
+                  src={shot.src}
+                  alt={`${project.title} — ${shot.label}`}
+                  loading="lazy"
+                  className="aspect-[4/3] w-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.02]"
+                />
+              </div>
+              <p className="mt-3 text-[14px] text-muted">{shot.label}</p>
+            </a>
+          </Reveal>
+        ))}
       </div>
 
       <Link to={`/work/${next.slug}`} className="group mt-32 block border-t border-line pt-10">

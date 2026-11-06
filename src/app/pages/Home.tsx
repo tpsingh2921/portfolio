@@ -3,8 +3,8 @@ import { ArrowUpRight, Plus } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router'
 
-import { projects, services, site, testimonials } from '../../data/site'
-import { Lines, Magnetic, Parallax, Reveal } from '../components/motion'
+import { certifications, projects, services, site } from '../../data/site'
+import { Lines, Parallax, Reveal } from '../components/motion'
 import { WorkCard } from '../components/WorkCard'
 import { cx } from '../lib/cx'
 
@@ -47,8 +47,10 @@ export function Home() {
       {/* Work */}
       <section id="work" className="mx-auto max-w-[1400px] scroll-mt-20 px-5 pt-24 sm:px-8 sm:pt-32">
         <div className="flex items-end justify-between">
-          <Lines as="h2" className="font-display text-[44px] sm:text-[64px]" lines={['Selected work']} />
-          <Reveal className="hidden text-[14px] text-muted sm:block">{projects.length} projects, 2024 to now</Reveal>
+          <Lines as="h2" className="font-display text-[44px] sm:text-[64px]" lines={['Selected projects']} />
+          <Reveal className="hidden text-[14px] text-muted sm:block">
+            {projects.length} business analysis projects, 2026
+          </Reveal>
         </div>
         <div className="mt-12 grid gap-x-6 gap-y-14 md:grid-cols-2 lg:gap-x-8 lg:gap-y-20">
           {projects.map((p, i) => (
@@ -61,19 +63,31 @@ export function Home() {
       <section className="mx-auto max-w-[1400px] px-5 pt-32 sm:px-8 sm:pt-44">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-20">
           <Reveal>
-            <Parallax src="/images/portrait.jpg" alt={site.name} className="aspect-[3/4] max-w-[460px] rounded-image" strength={6} />
+            <Parallax
+              src={site.photo}
+              alt={site.name}
+              className="aspect-[3/4] max-w-[460px] rounded-image"
+              frameClassName="portrait-backdrop"
+              strength={3}
+              zoom={1.06}
+              onError={(e) => {
+                e.currentTarget.style.display = 'none'
+              }}
+            />
           </Reveal>
           <div className="flex flex-col justify-center">
             <Lines
               as="h2"
               className="font-display text-balance text-[40px] sm:text-[56px] lg:text-[64px]"
-              lines={['I make the thing', 'and the thing', 'around the thing']}
+              lines={['From business need', 'to buildable story']}
             />
             <Reveal delay={0.2} className="mt-8 max-w-xl text-pretty text-[17px] leading-relaxed text-muted">
               <p>
-                Brands need products, products need websites, and websites need someone who cares about the last pixel and the first impression equally. I have spent ten years learning to do all three well, so clients do not have to explain their idea three times.
+                I came to business analysis from the technical side: a BSc in Computer Science and an MBA in Business Analytics. That means I can sit with stakeholders in the morning and the delivery team in the afternoon without losing the thread.
               </p>
-              <p className="mt-4">I work independently, usually with one or two clients at a time, from a studio in {site.location}.</p>
+              <p className="mt-4">
+                I care about the unglamorous parts: a requirement with a single reading, a matrix that shows where it was tested, and a backlog the team trusts. I am based in {site.location}, India.
+              </p>
             </Reveal>
             <Reveal delay={0.3} className="mt-8">
               <Link to="/about" className="link-draw inline-flex items-center gap-1.5 text-[15px] font-medium">
@@ -89,18 +103,18 @@ export function Home() {
       <section className="mx-auto max-w-[1400px] px-5 pt-32 sm:px-8 sm:pt-44">
         <div className="grid gap-10 lg:grid-cols-[1fr_2fr] lg:gap-20">
           <div>
-            <Lines as="h2" className="font-display text-[40px] sm:text-[56px]" lines={['What I do']} />
+            <Lines as="h2" className="font-display text-[40px] sm:text-[56px]" lines={['Core competencies']} />
             <Reveal delay={0.1} className="mt-4 max-w-xs text-[15px] text-muted">
-              Four things, done properly. Most projects are two of them.
+              Requirements, backlogs and the documents that keep a project honest.
             </Reveal>
           </div>
           <Services />
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* Certifications */}
       <section className="mx-auto max-w-[1400px] px-5 pt-32 sm:px-8 sm:pt-44">
-        <Testimonials />
+        <Certifications />
       </section>
     </>
   )
@@ -152,35 +166,38 @@ function Services() {
   )
 }
 
-function Testimonials() {
-  const [index, setIndex] = useState(0)
-  const t = testimonials[index]
+function Certifications() {
   return (
     <div className="rounded-[32px] bg-fg px-6 py-14 text-bg sm:px-14 sm:py-20">
-      <div className="mx-auto max-w-3xl">
-        <AnimatePresence mode="wait">
-          <motion.blockquote key={index} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.4, ease }}>
-            <p className="font-display text-balance text-[30px] leading-[1.1] sm:text-[44px]">“{t.quote}”</p>
-            <footer className="mt-8 text-[15px] text-bg/60">
-              <span className="text-bg">{t.name}</span>, {t.role}
-            </footer>
-          </motion.blockquote>
-        </AnimatePresence>
-        <div className="mt-10 flex items-center gap-2">
-          {testimonials.map((_, i) => (
-            <button
-              key={i}
-              type="button"
-              aria-label={`Testimonial ${i + 1}`}
-              onClick={() => setIndex(i)}
-              className={cx('h-1.5 rounded-[3px] transition-all duration-500', i === index ? 'w-10 bg-bg' : 'w-4 bg-bg/30 hover:bg-bg/50')}
-            />
+      <div className="mx-auto max-w-4xl">
+        <p className="text-[14px] text-bg/60">Certifications &amp; professional development</p>
+        <div className="mt-8 grid gap-6 sm:grid-cols-2">
+          {certifications.map((c) => (
+            <a
+              key={c.title}
+              href={c.image}
+              target="_blank"
+              rel="noreferrer"
+              className="group rounded-[20px] border border-bg/15 p-3 transition-colors duration-300 hover:border-bg/45"
+            >
+              <div className="overflow-hidden rounded-[14px] bg-white">
+                <img
+                  src={c.image}
+                  alt={`${c.title} certificate`}
+                  loading="lazy"
+                  onError={(e) => {
+                    e.currentTarget.parentElement?.remove()
+                  }}
+                  className="aspect-[7/5] w-full bg-white object-contain transition-transform duration-700 group-hover:scale-[1.03]"
+                />
+              </div>
+              <div className="px-2 pb-2 pt-4">
+                <p className="font-display text-balance text-[22px] leading-[1.2]">{c.title}</p>
+                <p className="mt-2 text-[13.5px] text-bg/60">{c.issuer}</p>
+                <p className="text-[13.5px] text-bg/40">{c.issued}</p>
+              </div>
+            </a>
           ))}
-          <Magnetic className="ml-auto">
-            <button type="button" onClick={() => setIndex((index + 1) % testimonials.length)} className="grid size-12 place-items-center rounded-[14px] border border-bg/20 transition-colors hover:bg-bg hover:text-fg" aria-label="Next">
-              <ArrowUpRight className="size-4 rotate-45" />
-            </button>
-          </Magnetic>
         </div>
       </div>
     </div>

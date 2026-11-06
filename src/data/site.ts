@@ -1,20 +1,22 @@
 // Everything about you lives here. The pages read from this file.
 
 export const site = {
-  name: 'Your Name',
-  role: 'Designer and creative developer',
-  location: 'Lisbon',
-  timezone: 'Europe/Lisbon',
-  email: 'hello@yourname.studio',
+  name: 'Tejpal Singh Jodha',
+  role: 'Business Analyst',
+  location: 'Jodhpur',
+  timezone: 'Asia/Kolkata',
+  photo: '/images/me-portrait.webp',
+  email: 'tpsingh2101@gmail.com',
+  phone: '+91 78771 27423',
+  linkedin: 'https://www.linkedin.com/in/tpsingh21',
   available: true,
-  intro: 'I design brands, products and websites for people building something worth looking at. Ten years in, still curious.',
+  intro:
+    'Business analyst with an MBA in Business Analytics and a BSc in Computer Science. I turn what a business needs into requirements, diagrams and a backlog a team can actually build from.',
   socials: [
-    { label: 'Instagram', href: '#' },
-    { label: 'Are.na', href: '#' },
-    { label: 'LinkedIn', href: '#' },
-    { label: 'Read.cv', href: '#' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/tpsingh21' },
+    { label: 'Email', href: 'mailto:tpsingh2101@gmail.com' },
   ],
-  marquee: ['Brand identity', 'Product design', 'Web design', 'Creative development', 'Art direction', 'Motion'],
+  marquee: ['Requirements elicitation', 'BRD · FRD · SRS', 'Agile Scrum', 'Waterfall', 'UML & wireframes', 'UAT & change requests'],
 }
 
 export interface Project {
@@ -24,6 +26,7 @@ export interface Project {
   category: string
   year: string
   cover: string
+  gallery: { src: string; label: string }[]
   tint: string
   summary: string
   role: string[]
@@ -35,111 +38,55 @@ export interface Project {
 
 export const projects: Project[] = [
   {
-    slug: 'aurora',
-    title: 'Aurora',
-    client: 'Aurora Climate',
-    category: 'Brand and website',
+    slug: 'clientrm',
+    title: 'ClientRM',
+    client: 'Upskilling project',
+    category: 'Agile Scrum',
     year: '2026',
-    cover: '/images/aurora.jpg',
-    tint: '#efe4d8',
-    summary: 'A brand and launch site for a climate-tech company that wanted to feel like weather, not like a dashboard.',
-    role: ['Art direction', 'Identity', 'Website'],
-    deliverables: ['Identity system', 'Motion language', 'Launch site', 'Pitch deck'],
-    link: '#',
-    body: [
-      'Aurora captures carbon from the air and turns it into stone. The founders had spent two years in the lab and six months being told their brand should look like every other climate company: green, serious, full of graphs.',
-      'We went the other way. The identity is built around a single soft form that changes with light, rendered in a palette borrowed from the sky at dawn. It moves slowly on the site and sits still on paper, and it never needs a leaf.',
-      'The launch site took the company from a waitlist of 400 to 11,000 in a month, and the pitch deck helped close a Series A.',
+    cover: '/images/clientrm-dashboard.png',
+    gallery: [
+      { src: '/images/clientrm-dashboard.png', label: 'Revenue dashboard' },
+      { src: '/images/clientrm-pipeline.png', label: 'Deals & sales pipeline' },
+      { src: '/images/clientrm-contacts.png', label: 'Contacts & leads' },
     ],
-    size: 'large',
+    tint: '#e6edfb',
+    summary:
+      'An enterprise CRM concept built to centralise customer data and streamline the sales pipeline, taken from product backlog to UAT across four Scrum sprints.',
+    role: ['Business analyst', 'Agile Scrum', 'JIRA'],
+    deliverables: [
+      'User stories with acceptance criteria',
+      'Product and sprint backlogs',
+      'DOR and DOD checklists',
+      'Burndown and burn-up charts',
+    ],
+    body: [
+      'ClientRM is an enterprise CRM platform designed to centralise customer data and streamline sales pipelines. I worked as the business analyst alongside a Product Owner and Scrum Master, turning the product vision into a backlog the team could pick up sprint by sprint.',
+      'I wrote the user stories and their acceptance criteria, then added them to the product backlog in JIRA. Requirements were prioritised and validated using MoSCoW and FURPS, and the sprint backlog followed that order. With the Product Owner I helped define business value and complexity points, and I built the DOR and DOD checklists the team used before and after every story.',
+      'Through the sprint ceremonies I tracked progress on sprint and product burndown and burn-up charts and helped clear blockers, and I took part in product planning and UAT so each sprint component was signed off before release.',
+    ],
+    size: 'small',
   },
   {
-    slug: 'meridian',
-    title: 'Meridian',
-    client: 'Meridian Bank',
-    category: 'Product design',
+    slug: 'shophere',
+    title: 'ShopHere',
+    client: 'Upskilling project',
+    category: 'Waterfall',
     year: '2026',
-    cover: '/images/meridian.jpg',
-    tint: '#dbe0f5',
-    summary: 'Redesigning a banking app around the one question people actually have: can I afford this?',
-    role: ['Product design', 'Design system', 'Prototyping'],
-    deliverables: ['iOS and Android app', 'Design system', 'Research synthesis'],
-    body: [
-      'Meridian had a feature for everything and a home screen nobody understood. We spent a month talking to customers and heard the same thing in different words: they open the app to decide whether to spend money, and the app made that harder.',
-      'The new home screen answers that question first, in one number, then explains it. Everything else moved behind it. We rebuilt the design system in the process so the team could ship the rest without us.',
-      'App store rating went from 3.1 to 4.7 over the following two releases.',
+    cover: '/images/shophere-home.png',
+    gallery: [
+      { src: '/images/shophere-home.png', label: 'Storefront' },
+      { src: '/images/shophere-product.png', label: 'Product detail' },
+      { src: '/images/shophere-checkout.png', label: 'Checkout' },
     ],
-    size: 'small',
-  },
-  {
-    slug: 'fold',
-    title: 'Fold',
-    client: 'Self-initiated',
-    category: 'Typeface',
-    year: '2025',
-    cover: '/images/fold.jpg',
-    tint: '#e8e2d6',
-    summary: 'A high-contrast serif drawn for editorial headlines, with a specimen printed by hand.',
-    role: ['Type design', 'Print'],
-    deliverables: ['Variable font, two axes', 'Letterpress specimen', 'Microsite'],
-    link: '#',
+    tint: '#f7ece3',
+    summary:
+      'An e-commerce marketplace concept delivered through the Waterfall lifecycle, from structured elicitation and BRD through UML, RTM and a signed-off UAT.',
+    role: ['Business analyst', 'Waterfall', 'Modelling'],
+    deliverables: ['BRD, FRD and SRS', 'UML diagrams and wireframes', 'Requirements traceability matrix', 'Test scenarios and UAT sign-off'],
     body: [
-      'Fold started as a sketch of an S that would not sit still. Two years later it is a two-axis variable family with a display cut that leans into its own awkwardness.',
-      'The specimen was printed on a Vandercook in an afternoon with a friend who knows what he is doing. The impression you can feel on the paper is the whole point.',
-    ],
-    size: 'small',
-  },
-  {
-    slug: 'halcyon',
-    title: 'Halcyon',
-    client: 'Halcyon Hotels',
-    category: 'Website',
-    year: '2025',
-    cover: '/images/halcyon.jpg',
-    tint: '#ebe3d6',
-    summary: 'A booking site for a small group of hotels that feels like checking in, not checking out.',
-    role: ['Design', 'Development'],
-    deliverables: ['Website', 'Booking flow', 'CMS'],
-    link: '#',
-    body: [
-      'Halcyon runs four hotels in buildings that are each a hundred years old. Their old site was a template with a booking widget bolted on, and it looked like every other hotel.',
-      'We built something slower. Big photography, long scrolling pages that tell you about the neighbourhood before they tell you about the rooms, and a booking flow with three steps instead of nine.',
-      'Direct bookings rose 38% in the first quarter, which is the number the owners cared about.',
-    ],
-    size: 'large',
-  },
-  {
-    slug: 'nocturne',
-    title: 'Nocturne',
-    client: 'Vela Records',
-    category: 'Art direction',
-    year: '2024',
-    cover: '/images/nocturne.jpg',
-    tint: '#d8d4e4',
-    summary: 'A visual identity for a debut album that had to work as a vinyl sleeve, a stage and a four-second loop.',
-    role: ['Art direction', 'Motion'],
-    deliverables: ['Album artwork', 'Live visuals', 'Social system'],
-    body: [
-      'The record is dark, slow and strangely warm. The visuals are liquid captured at macro scale, lit so the colour only appears where it catches the light.',
-      'The same footage runs behind the band on stage and loops in nine-by-sixteen on the socials. One idea, every surface.',
-    ],
-    size: 'small',
-  },
-  {
-    slug: 'kite',
-    title: 'Kite',
-    client: 'Kite Outdoors',
-    category: 'E-commerce',
-    year: '2024',
-    cover: '/images/kite.jpg',
-    tint: '#d9e6dc',
-    summary: 'A storefront for an outdoor brand that sells fewer, better things, and wanted the site to say so.',
-    role: ['Design', 'Development'],
-    deliverables: ['Storefront', 'Campaign system', 'Email templates'],
-    link: '#',
-    body: [
-      'Kite makes eleven products. Most outdoor sites are built for eleven thousand. We designed a store that treats each product like a chapter, with campaign photography shot on seamless colour so the range reads as one family.',
-      'Conversion rate doubled against the previous site, with roughly half the pages.',
+      'ShopHere is an e-commerce marketplace platform built to optimise the online shopping experience and streamline administrative operations. It ran as a Waterfall project, so the documentation had to be right before build started.',
+      'I gathered requirements using structured elicitation techniques and prepared the Business Requirements Document, then translated the BRD into a Functional Requirements Document and worked with the technical team on the System Requirements Specification. Use case, activity and flow diagrams plus wireframes were produced in MS Visio, Balsamiq and Axure.',
+      'I created and maintained the Requirements Traceability Matrix throughout the lifecycle, designed the test case scenarios and facilitated UAT through to sign-off.',
     ],
     size: 'small',
   },
@@ -149,43 +96,50 @@ export const bySlug = (slug: string) => projects.find((p) => p.slug === slug)
 
 export const services = [
   {
-    title: 'Brand identity',
-    body: 'Naming, identity systems, guidelines and the motion that makes them feel alive. Built to be used by your team, not just admired by mine.',
+    title: 'Requirements & documentation',
+    body: 'Structured elicitation, then BRDs, FRDs and SRS documents that say one thing only. I maintain the RTM through every change request so nothing gets lost between the ask and the test case.',
   },
   {
-    title: 'Product design',
-    body: 'Research, flows, interface and design systems for apps and software. I work inside the product team, in your tools, at your pace.',
+    title: 'Agile Scrum',
+    body: 'User stories with acceptance criteria, product and sprint backlogs prioritised with MoSCoW and FURPS, DOR and DOD checklists, and the burndown and burn-up charts that show whether a sprint is really on track.',
   },
   {
-    title: 'Websites',
-    body: 'Marketing sites, storefronts and editorial platforms, designed and built. Fast, accessible, and easy to keep updated without me.',
+    title: 'Process modelling & prototyping',
+    body: 'UML use case, activity and flow diagrams, gap analysis, and wireframes in Axure, Balsamiq and MS Visio, so stakeholders can react to something concrete instead of a paragraph.',
   },
   {
-    title: 'Creative development',
-    body: 'The interactive and generative layer: WebGL, motion, shaders and the small details that make a site feel considered.',
+    title: 'Analysis, SQL & reporting',
+    body: 'SQL for pulling and shaping data, Power BI and Tableau for the reporting layer, and the stakeholder communication and UAT facilitation that makes the numbers useful.',
   },
 ]
 
-export const testimonials = [
+export const certifications = [
   {
-    quote: 'The rare designer who can hold the whole thing in their head: the brand, the product, the code. We shipped in half the time and it looks twice as good.',
-    name: 'Lena Fischer',
-    role: 'Founder, Aurora Climate',
+    title: 'Business Analyst — 40 professional development hours',
+    issuer: 'COEPD · IIBA Endorsed Education Provider',
+    issued: 'Issued 27 July 2026',
+    image: '/images/certificate-coepd.jpg',
   },
   {
-    quote: 'Every review ended with us removing something. I have never worked with anyone so good at taking things away.',
-    name: 'Charlotte Ng',
-    role: 'Head of Digital, Meridian Bank',
+    title: 'Registered Scrum Basics™',
+    issuer: 'Agile Education by Scrum Inc.™',
+    issued: 'Issued 20 May 2026',
+    image: '/images/certificate-scrum-basics.jpg',
   },
-  {
-    quote: 'Our site finally feels like our hotels. Guests mention it at check-in.',
-    name: 'Jonas Weber',
-    role: 'Owner, Halcyon Hotels',
-  },
+]
+
+export const tools = [
+  { label: 'Documentation', value: 'MS Word · Excel · PowerPoint' },
+  { label: 'Modelling', value: 'MS Visio · Draw.io' },
+  { label: 'Prototyping', value: 'Axure · Balsamiq' },
+  { label: 'Delivery', value: 'JIRA · Confluence' },
+  { label: 'Data & BI', value: 'SQL · Power BI · Tableau' },
+  { label: 'Domain', value: 'IT · CRM' },
 ]
 
 export const experience = [
-  { period: '2021 to now', title: 'Independent', detail: 'Brand, product and web for startups and studios' },
-  { period: '2018 to 2021', title: 'Design lead, Fathom', detail: 'Led a team of six across analytics products' },
-  { period: '2015 to 2018', title: 'Designer, Halcyon Studio', detail: 'Identity and editorial work for cultural clients' },
+  { period: '2025', title: 'MBA, Business Analytics', detail: 'Sir Padampat Singhania University, Udaipur' },
+  { period: '2023', title: 'BSc, Computer Science', detail: 'Lachoo Memorial College of Science & Technology, Jodhpur' },
+  { period: 'COEPD', title: 'Business Analyst, 40 PD hours', detail: 'IIBA Endorsed Education Provider' },
+  { period: 'Scrum Inc.', title: 'Registered Scrum Basics™', detail: 'Agile Education by Scrum Inc.™' },
 ]

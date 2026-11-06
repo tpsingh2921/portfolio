@@ -33,9 +33,19 @@ export function WorkCard({ project, index = 0 }: { project: Project; index?: num
           y.set(e.clientY - rect.top)
         }}
       >
-        <div className={cx('relative overflow-hidden rounded-image', project.size === 'large' ? 'aspect-[16/10]' : 'aspect-[4/5] md:aspect-[4/4.6]')} style={{ background: project.tint }}>
+        <div className={cx('relative overflow-hidden rounded-image', project.size === 'large' ? 'aspect-[16/10]' : 'aspect-[4/3]')} style={{ background: project.tint }}>
           <div className="absolute inset-0 transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]">
-            <Parallax src={project.cover} alt={project.title} className="size-full" strength={6} />
+            <Parallax
+              src={project.cover}
+              alt={project.title}
+              className="size-full"
+              strength={0}
+              zoom={1}
+              imgClassName="object-top"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none'
+              }}
+            />
           </div>
           <motion.span
             aria-hidden
@@ -50,7 +60,7 @@ export function WorkCard({ project, index = 0 }: { project: Project; index?: num
         </div>
         <div className="mt-4 flex items-baseline justify-between gap-4">
           <h3 className="font-display text-[28px] sm:text-[32px]">{project.title}</h3>
-          <p className="shrink-0 text-[13.5px] text-muted">
+          <p className="max-w-[55%] text-right text-[13.5px] text-muted">
             {project.category}
             <span className="ml-3 tabular-nums text-faint">{project.year}</span>
           </p>

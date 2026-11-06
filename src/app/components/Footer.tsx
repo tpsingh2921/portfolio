@@ -29,7 +29,7 @@ export function Footer() {
       <div className="mx-auto max-w-[1400px] px-5 py-20 sm:px-8 sm:py-28">
         <div className="grid gap-14 lg:grid-cols-[1.2fr_1fr] lg:gap-24">
           <div>
-            <Lines as="h2" className="font-display text-[clamp(48px,8vw,120px)]" lines={['Let’s make', <>something <span className="text-accent">good</span></>]} />
+            <Lines as="h2" className="font-display text-[clamp(48px,8vw,120px)]" lines={['Let’s make', <>it <span className="text-accent">clear</span></>]} />
             <Reveal delay={0.2} className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3">
               <Magnetic>
                 <a href={`mailto:${site.email}`} className="inline-flex h-14 items-center gap-2 rounded-[16px] bg-fg px-7 text-[16px] font-medium text-bg transition-colors hover:bg-[#2b2925]">
@@ -38,7 +38,7 @@ export function Footer() {
                 </a>
               </Magnetic>
               <p className="text-[14px] text-muted">
-                {site.available ? 'Taking on projects for next quarter' : 'Fully booked at the moment'}
+                {site.available ? 'Open to Business Analyst roles' : 'Not looking at the moment'}
               </p>
             </Reveal>
           </div>
@@ -57,7 +57,7 @@ export function Footer() {
                 </div>
                 <textarea
                   required
-                  placeholder="A few words about the project"
+                  placeholder="A few words about the role or project"
                   className={`${field} h-auto min-h-[140px] resize-none py-4`}
                   value={form.message}
                   onChange={(e) => setForm({ ...form, message: e.target.value })}
