@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Link } from 'react-router'
 
 import { certifications, projects, services, site } from '../../data/site'
+import { HeroSkills } from '../components/HeroSkills'
 import { Lines, Parallax, Reveal } from '../components/motion'
 import { WorkCard } from '../components/WorkCard'
 import { cx } from '../lib/cx'
@@ -17,18 +18,40 @@ export function Home() {
       <section className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden">
         <HeroField />
         <div className="relative mx-auto w-full max-w-[1400px] px-5 pb-10 pt-28 sm:px-8 sm:pb-14">
-          <h1 className="font-display text-[clamp(64px,13.5vw,210px)]">
-            {site.name.split(' ').map((word, i) => (
-              <span key={word} className="block overflow-hidden pb-[0.06em] -mb-[0.06em]">
-                <motion.span className="block" initial={{ y: '110%' }} animate={{ y: 0 }} transition={{ duration: 1.1, delay: 0.25 + i * 0.12, ease }}>
-                  {word}
-                </motion.span>
-              </span>
-            ))}
-          </h1>
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.7, ease }} className="mt-10 border-t border-fg/15 pt-6">
-            <p className="max-w-md text-pretty text-[17px] leading-relaxed text-muted sm:text-[19px]">{site.intro}</p>
-          </motion.div>
+          <div className="grid items-end gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-10 xl:grid-cols-[1.15fr_1fr] xl:gap-14">
+            <div>
+              <h1 className="font-display text-[clamp(56px,8.8vw,142px)] leading-[0.88] tracking-tight">
+                {site.name.split(' ').map((word, i) => (
+                  <span key={word} className="block overflow-hidden pb-[0.05em] -mb-[0.05em]">
+                    <motion.span className="block" initial={{ y: '110%' }} animate={{ y: 0 }} transition={{ duration: 1.1, delay: 0.25 + i * 0.12, ease }}>
+                      {word}
+                    </motion.span>
+                  </span>
+                ))}
+              </h1>
+
+              <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.7, ease }} className="mt-8 space-y-1.5 sm:mt-10">
+                <p className="text-[15px] font-medium tracking-wide text-fg sm:text-[16px]">
+                  Design Technologist &amp; Creative Director <span className="text-accent">•</span>
+                </p>
+                <p className="text-[12px] font-bold uppercase tracking-widest text-muted/80">
+                  AVAILABLE FOR PROJECTS
+                </p>
+                <p className="mt-3.5 max-w-md text-pretty text-[14.5px] leading-relaxed text-muted sm:text-[15.5px]">
+                  {site.intro}
+                </p>
+              </motion.div>
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 24, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.95, delay: 0.45, ease }}
+              className="w-full lg:pb-2"
+            >
+              <HeroSkills />
+            </motion.div>
+          </div>
         </div>
       </section>
 
