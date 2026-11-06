@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <rect x="16" y="16" width="224" height="224" rx="56" fill="#141311"/>
+  <!-- Upper T bar & S curve -->
+  <path d="M 52 64 H 204 C 212 64 218 70 218 78 C 218 86 212 92 204 92 H 146 V 116 H 182 C 204 116 220 132 220 154 C 220 178 200 196 174 196 H 88 C 80 196 74 190 74 182 C 74 174 80 168 88 168 H 174 C 182 168 188 162 188 154 C 188 146 182 140 174 140 H 138 C 122 140 114 130 114 116 V 92 H 52 C 44 92 38 86 38 78 C 38 70 44 64 52 64 Z" fill="#F8FAFC"/>
+  <!-- Central Analytics Node -->
+  <circle cx="76" cy="140" r="16" fill="#2F3BFF"/>
+</svg>

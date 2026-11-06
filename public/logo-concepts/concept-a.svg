@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <rect x="16" y="16" width="224" height="224" rx="56" fill="#141311"/>
+  <!-- Top T Bar -->
+  <path d="M 52 64 H 156 A 14 14 0 0 1 170 78 V 82 A 14 14 0 0 1 156 96 H 144 V 148 C 144 176 122 196 92 196 C 64 196 46 176 46 150 H 76 C 76 162 82 170 92 170 C 104 170 114 160 114 148 V 96 H 52 A 14 14 0 0 1 38 82 V 78 A 14 14 0 0 1 52 64 Z" fill="#F8FAFC"/>
+  <!-- Data & Architecture Focus Node (Cobalt) -->
+  <circle cx="190" cy="80" r="18" fill="#2F3BFF"/>
+  <circle cx="166" cy="168" r="14" fill="#2F3BFF" opacity="0.85"/>
+</svg>

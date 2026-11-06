@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <rect x="16" y="16" width="224" height="224" rx="56" fill="#0F172A"/>
+  <!-- Geometric T -->
+  <path d="M 48 64 H 168 V 92 H 122 V 192 H 94 V 92 H 48 Z" fill="#F8FAFC"/>
+  <!-- Geometric J stem & hook -->
+  <path d="M 172 92 H 200 V 164 C 200 182 186 194 166 194 C 150 194 138 184 138 170 H 164 C 164 173 165 174 166 174 C 170 174 172 170 172 164 Z" fill="#2F3BFF"/>
+  <!-- Top Right Precision Indicator -->
+  <circle cx="186" cy="64" r="14" fill="#2F3BFF"/>
+</svg>
