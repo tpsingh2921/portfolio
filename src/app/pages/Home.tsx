@@ -59,9 +59,9 @@ export function Home() {
         </div>
       </section>
 
-      {/* About teaser */}
-      <section className="mx-auto max-w-[1400px] px-5 pt-32 sm:px-8 sm:pt-44">
-        <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-20">
+      {/* About Section */}
+      <section id="about" className="mx-auto max-w-[1400px] scroll-mt-20 px-5 pt-32 sm:px-8 sm:pt-44">
+        <div className="grid gap-12 lg:grid-cols-[1fr_1.25fr] lg:gap-20">
           <Reveal>
             <Parallax
               src={site.photo}
@@ -74,24 +74,60 @@ export function Home() {
                 e.currentTarget.style.display = 'none'
               }}
             />
+            {/* Academic & Certification Badges */}
+            <div className="mt-6 flex flex-wrap gap-2 text-[13px]">
+              <span className="rounded-control border border-line bg-surface px-3 py-1.5 font-medium text-fg">
+                MBA · Business Analytics
+              </span>
+              <span className="rounded-control border border-line bg-surface px-3 py-1.5 font-medium text-fg">
+                B.Sc. · Computer Science
+              </span>
+              <span className="rounded-control border border-line bg-surface px-3 py-1.5 font-medium text-muted">
+                COEPD (IIBA Endorsed)
+              </span>
+              <span className="rounded-control border border-line bg-surface px-3 py-1.5 font-medium text-muted">
+                Scrum Inc.™ Certified
+              </span>
+            </div>
           </Reveal>
+
           <div className="flex flex-col justify-center">
             <Lines
               as="h2"
               className="font-display text-balance text-[40px] sm:text-[56px] lg:text-[64px]"
-              lines={['From business need', 'to buildable story']}
+              lines={['From business need', 'to buildable software']}
             />
             <Reveal delay={0.2} className="mt-8 max-w-xl text-pretty text-[17px] leading-relaxed text-muted">
               <p>
-                I came to business analysis from the technical side: a BSc in Computer Science and an MBA in Business Analytics. That means I can sit with stakeholders in the morning and the delivery team in the afternoon without losing the thread.
+                I am an IT Business Analyst with an <strong>MBA in Business Analytics</strong> and a <strong>B.Sc. in Computer Science</strong>. I operate at the intersection of business strategy and engineering execution—turning loose stakeholder requirements into structured specifications, testable user stories, and complete traceability.
               </p>
               <p className="mt-4">
-                I care about the unglamorous parts: a requirement with a single reading, a matrix that shows where it was tested, and a backlog the team trusts. I am based in {site.location}, India.
+                Because I came in from computer science, I understand relational data structures, API contracts, and architectural trade-offs. I can sit with department leaders in the morning to unpack their operational pain points, and collaborate with software engineers in the afternoon without losing context or intent.
+              </p>
+              <p className="mt-4">
+                Across both Agile Scrum and Waterfall lifecycles, I care about the unglamorous parts that keep projects on schedule: a specification with a single interpretation, a matrix tying every need to a test script, and a backlog the delivery team trusts.
               </p>
             </Reveal>
-            <Reveal delay={0.3} className="mt-8">
+
+            {/* Core BA Pillars Preview */}
+            <Reveal delay={0.25} className="mt-8 grid gap-4 sm:grid-cols-2">
+              <div className="rounded-card border border-line bg-surface/60 p-5">
+                <p className="text-[15px] font-medium text-fg">Zero Ambiguity in Scope</p>
+                <p className="mt-1 text-[13.5px] leading-normal text-muted">
+                  Formal BRDs, FRDs, and SRS documents with functional rules and failure branches mapped out to prevent rework.
+                </p>
+              </div>
+              <div className="rounded-card border border-line bg-surface/60 p-5">
+                <p className="text-[15px] font-medium text-fg">Full RTM Traceability</p>
+                <p className="mt-1 text-[13.5px] leading-normal text-muted">
+                  Every business requirement linked directly to functional specifications and verified UAT test cases.
+                </p>
+              </div>
+            </Reveal>
+
+            <Reveal delay={0.3} className="mt-8 flex items-center gap-6">
               <Link to="/about" className="link-draw inline-flex items-center gap-1.5 text-[15px] font-medium">
-                More about me
+                Detailed background, education &amp; methodology
                 <ArrowUpRight className="size-4" />
               </Link>
             </Reveal>
@@ -113,49 +149,61 @@ export function Home() {
       </section>
 
       {/* Certifications */}
-      <section className="mx-auto max-w-[1400px] px-5 pt-32 sm:px-8 sm:pt-44">
-        <Certifications />
+      <section id="certifications" className="mx-auto max-w-[1400px] scroll-mt-20 px-5 pt-32 sm:px-8 sm:pt-44">
+        <div className="flex items-end justify-between">
+          <Lines as="h2" className="font-display text-[40px] sm:text-[56px]" lines={['Certifications']} />
+          <Reveal className="hidden text-[14px] text-muted sm:block">Endorsed education &amp; agile credentials</Reveal>
+        </div>
+        <div className="mt-12 grid gap-8 md:grid-cols-2">
+          {certifications.map((c, i) => (
+            <Reveal key={c.title} delay={i * 0.1} className="group flex flex-col justify-between rounded-card border border-line bg-surface/50 p-6 sm:p-8 transition-colors hover:border-fg/30">
+              <div>
+                <div className="aspect-[4/3] overflow-hidden rounded-image bg-surface-2">
+                  <img
+                    src={c.image}
+                    alt={c.title}
+                    className="size-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+                    loading="lazy"
+                  />
+                </div>
+                <h3 className="font-display mt-6 text-[26px] sm:text-[30px]">{c.title}</h3>
+                <p className="mt-2 text-[14px] text-muted">{c.issuer}</p>
+              </div>
+              <p className="mt-6 text-[13px] text-faint">{c.issued}</p>
+            </Reveal>
+          ))}
+        </div>
       </section>
     </>
   )
 }
 
-// Slow colour fields behind the hero: the accent, a coral and a warm peach,
-// blurred and drifting, fading into the paper before the intro line. The
-// grain keeps it from reading as a flat gradient.
-function HeroField() {
-  return (
-    <div aria-hidden className="pointer-events-none absolute inset-0 [mask-image:linear-gradient(to_bottom,#000_60%,transparent_96%)]">
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.6, ease }} className="absolute inset-0">
-        <div className="round absolute -top-[25%] right-[-12%] h-[95%] w-[70%] animate-drift-a rounded-full bg-[radial-gradient(closest-side,rgb(47_59_255/0.72),transparent)] blur-3xl" />
-        <div className="round absolute -top-[10%] left-[-12%] h-[80%] w-[62%] animate-drift-b rounded-full bg-[radial-gradient(closest-side,rgb(255_106_61/0.62),transparent)] blur-3xl" />
-        <div className="round absolute top-[22%] left-[32%] h-[70%] w-[56%] animate-drift-c rounded-full bg-[radial-gradient(closest-side,rgb(255_196_120/0.7),transparent)] blur-3xl" />
-        <div className="round absolute top-[45%] right-[12%] h-[50%] w-[40%] animate-drift-b rounded-full bg-[radial-gradient(closest-side,rgb(196_170_255/0.55),transparent)] blur-3xl" />
-      </motion.div>
-      <div className="grain absolute inset-0" />
-    </div>
-  )
-}
-
 function Services() {
-  const [open, setOpen] = useState(0)
+  const [open, setOpen] = useState<number | null>(null)
+
   return (
-    <ul className="border-t border-line">
+    <ul className="divide-y divide-line border-y border-line">
       {services.map((s, i) => {
         const isOpen = open === i
         return (
-          <li key={s.title} className="border-b border-line">
-            <button type="button" aria-expanded={isOpen} onClick={() => setOpen(isOpen ? -1 : i)} className="group flex w-full items-center gap-6 py-7 text-left">
-              <span className="w-10 shrink-0 text-[14px] tabular-nums text-faint">0{i + 1}</span>
-              <span className={cx('font-display flex-1 text-[32px] transition-colors sm:text-[44px]', isOpen ? 'text-fg' : 'text-fg/60 group-hover:text-fg')}>{s.title}</span>
-              <span className={cx('grid size-10 shrink-0 place-items-center rounded-[12px] border border-line-strong transition-colors duration-300', isOpen && 'border-fg bg-fg text-bg')}>
-                <Plus className={cx('size-4 transition-transform duration-500', isOpen && 'rotate-45')} />
+          <li key={s.title}>
+            <button
+              type="button"
+              onClick={() => setOpen(isOpen ? null : i)}
+              className="flex w-full items-center justify-between py-7 text-left transition-colors hover:text-accent"
+              aria-expanded={isOpen}
+            >
+              <span className="font-display text-[26px] sm:text-[36px]">{s.title}</span>
+              <span className={cx('round flex size-10 items-center justify-center rounded-full border border-line transition-transform duration-300', isOpen && 'rotate-45')}>
+                <Plus className="size-4" />
               </span>
             </button>
             <AnimatePresence initial={false}>
               {isOpen && (
-                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.45, ease }} className="overflow-hidden">
-                  <p className="max-w-xl pb-8 pl-16 text-pretty text-[16px] leading-relaxed text-muted">{s.body}</p>
+                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.35, ease }}>
+                  <div className="pb-8 pr-12 text-[16px] leading-relaxed text-muted">
+                    <p>{s.body}</p>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -166,40 +214,13 @@ function Services() {
   )
 }
 
-function Certifications() {
+function HeroField() {
   return (
-    <div className="rounded-[32px] bg-fg px-6 py-14 text-bg sm:px-14 sm:py-20">
-      <div className="mx-auto max-w-4xl">
-        <p className="text-[14px] text-bg/60">Certifications &amp; professional development</p>
-        <div className="mt-8 grid gap-6 sm:grid-cols-2">
-          {certifications.map((c) => (
-            <a
-              key={c.title}
-              href={c.image}
-              target="_blank"
-              rel="noreferrer"
-              className="group rounded-[20px] border border-bg/15 p-3 transition-colors duration-300 hover:border-bg/45"
-            >
-              <div className="overflow-hidden rounded-[14px] bg-white">
-                <img
-                  src={c.image}
-                  alt={`${c.title} certificate`}
-                  loading="lazy"
-                  onError={(e) => {
-                    e.currentTarget.parentElement?.remove()
-                  }}
-                  className="aspect-[7/5] w-full bg-white object-contain transition-transform duration-700 group-hover:scale-[1.03]"
-                />
-              </div>
-              <div className="px-2 pb-2 pt-4">
-                <p className="font-display text-balance text-[22px] leading-[1.2]">{c.title}</p>
-                <p className="mt-2 text-[13.5px] text-bg/60">{c.issuer}</p>
-                <p className="text-[13.5px] text-bg/40">{c.issued}</p>
-              </div>
-            </a>
-          ))}
-        </div>
-      </div>
+    <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden>
+      <div className="absolute -left-[20%] -top-[25%] size-[75vw] max-w-[1000px] rounded-full bg-[#f8d4bb] opacity-70 blur-[110px] animate-drift-a" />
+      <div className="absolute -right-[15%] top-[10%] size-[65vw] max-w-[900px] rounded-full bg-[#c7d7f7] opacity-80 blur-[120px] animate-drift-b" />
+      <div className="absolute bottom-[-20%] left-[20%] size-[70vw] max-w-[950px] rounded-full bg-[#ecd5ea] opacity-60 blur-[130px] animate-drift-c" />
+      <div className="grain absolute inset-0" />
     </div>
   )
 }
